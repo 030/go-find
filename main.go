@@ -7,33 +7,31 @@ import (
 	"path/filepath"
 )
 
-func find() string {
-	return "hello"
-}
-
-func scanDir(name string) filepath.WalkFunc {
-	return func(path string, f os.FileInfo, err error) error {
-		// matchedPath := ""
+func findFile(dir string, name string) string {
+	matchedPath := ""
+	err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err, "-------------------")
 		}
+
 		if !f.IsDir() {
 			if f.Name() == name {
-				fmt.Println(path)
-				// matchedPath = path
+				matchedPath = path
 			}
 		}
 		return nil
-	}
-}
-
-func findFile(dir string, name string) {
-	err := filepath.Walk(dir, scanDir(name))
+	})
 	if err != nil {
 		log.Fatal(err, "-------------------")
 	}
+	if matchedPath == "" {
+		log.Fatal(name, "does not exist")
+	}
+
+	return matchedPath
 }
 
 func main() {
-	findFile("test", "file0")
+	path := findFile("test", "file10")
+	fmt.Println(path)
 }
