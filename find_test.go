@@ -1,4 +1,4 @@
-package main
+package find
 
 import (
 	"os"
@@ -27,11 +27,20 @@ func TestDir(t *testing.T) {
 	createTestStructure()
 
 	expected := "test/something/file9"
-	actual := findFile("test", "file9")
+	actual, _ := findFile("test", "file9")
 
 	if expected != actual {
 		t.Errorf("got value: %s, want: %s.", actual, expected)
 	}
 
-	// deleteTestStructure()
+	deleteTestStructure()
+}
+
+func TestErrors(t *testing.T) {
+	expected := "File file9 was not found in directory test2"
+	_, err := findFile("test2", "file9")
+
+	if err.Error() != expected {
+		t.Errorf("got value: %s, want: %s.", err, expected)
+	}
 }
